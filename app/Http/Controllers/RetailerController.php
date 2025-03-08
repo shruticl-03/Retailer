@@ -53,6 +53,7 @@ class RetailerController extends Controller
             'Nadia',
             'Purulia'
         ];
+        $selectedDistrict = $request->input('district');
 
         // Distributor Data (Ideally should come from the database)
         $distributorData = [
