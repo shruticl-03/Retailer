@@ -25,6 +25,7 @@ Route::get('optimize', function () {
 
 Route::get('', [UserController::class, 'userLogin'])->name('login');
 Route::get('/retailer/create', [RetailerController::class, 'retailerCreate'])->name('retailer-create');
+Route::post('/retailer/store', [RetailerController::class, 'store'])->name('retailer-store');
 
 Route::group(
     ['prefix' => 'user'],

@@ -77,4 +77,50 @@ class RetailerController extends Controller
 
         return view('user.retailer.create', compact('districts', 'selectedDistrict', 'distributors'));
     }
+
+
+    public function store(Request $request)
+    {
+        // Validate request
+        $request->validate([
+            'shop_name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'mobile_no' => 'required|digits:10',
+            'alt_mobile_no' => 'nullable|digits:10',
+            'shop_address' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'pin_code' => 'required|digits:6',
+            'photo' => 'required',
+            'latitude' => 'required',
+            'longitude' => 'required',
+        ]);
+
+        // Save retailer data to the database (assuming you have a Retailer model)
+        $retailer = new \App\Models\Retailer();
+        $retailer->shop_name = $request->shop_name;
+        $retailer->owner_name = $request->owner_name;
+        $retailer->mobile_no = $request->mobile_no;
+        $retailer->alt_mobile_no = $request->alt_mobile_no;
+        $retailer->shop_address = $request->shop_address;
+        $retailer->city = $request->city;
+        $retailer->state = $request->state;
+        $retailer->pin_code = $request->pin_code;
+        $retailer->latitude = $request->latitude;
+        $retailer->longitude = $request->longitude;
+
+        // Convert base64 image to file and store it
+        if ($request->photo) {
+            $image = $request->photo;
+            $image = str_replace('data:image/png;base64,', '', $image);
+            $image = str_replace(' ', '+', $image);
+            $imageName = time() . '.png';
+            \File::put(public_path('uploads/') . $imageName, base64_decode($image));
+            $retailer->photo = 'uploads/' . $imageName;
+        }
+
+        $retailer->save();
+
+        return redirect()->back()->with('success', 'Retailer registered successfully!');
+    }
 }
